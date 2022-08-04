@@ -1,0 +1,44 @@
+@isTest 
+public class TestRestrictContactByName {
+
+         @isTest 
+    public static void testerror() {
+    Contact contatin = new Contact (LastName='Test contact');
+       Test.startTest();
+        Database.SaveResult result = Database.insert(contatin);
+        Test.stopTest();
+        // Verificar se adicionou o dado com sucesso. 
+       
+        System.assert(result.isSuccess());
+        
+        
+            
+    }
+    @isTest 
+    public static void testerror2() {
+    Contact contatin = new Contact (LastName='INVALIDNAME');
+        Test.startTest();
+        Database.SaveResult result = Database.insert(contatin,false);
+        Test.stopTest();
+        
+        // Verificar se inserção foi interrompida pela trigger, e verificar se o erro foi o esperado.
+        System.assert(!result.isSuccess());
+        System.assert(result.getErrors().size() > 0);
+        System.assertEquals('The Last Name "'+contatin.LastName+'" is not allowed for DML',
+                             result.getErrors()[0].getMessage());
+       
+                
+    }
+    @istest
+    public static void testerror3() {
+    Contact contatin = new Contact (LastName='Test contact');
+      
+        insert contatin;
+        //inserir o contato no teste para obter id teste e verificar se o campo LastName inserido foi do valor inserido.
+        
+        system.assertnotEquals(contatin.Id, null, 'o contato tem im id so de teste'+contatin.Id);
+        Contact contatin2 = [Select Id, LastName From Contact Where Id=:contatin.Id ];
+        System.assertEquals(contatin2.LastName,contatin.LastName);
+       
+    }
+}
